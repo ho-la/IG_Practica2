@@ -27,6 +27,9 @@ void funIdle();
 void glDrawSphere(char color,float radio);
 void tarea1();
 void tarea2();
+void tarea3();
+void tarea4();
+void drawPieza();
 
 // Variables globales
 int w = 800;
@@ -49,6 +52,9 @@ GLfloat RAnio = 0.0f;
 GLfloat RDia = 0.0f;
 GLfloat RMes=0.0f;
 
+GLfloat T4Girar=0.0f;
+GLfloat T4Dezplazar=0.0f;
+GLboolean esTarea4=true;
 int main(int argc, char** argv) {
     
  // Inicializamos GLUT
@@ -142,14 +148,34 @@ void funDisplay() {
     glTranslatef(0.0f, 0.0f, desZ);
     glTranslatef(0.0f, 0.0f, -5.0f);
     //tarea1();
-    tarea2();
+    //tarea2();
     //tarea3();
+    tarea4();
  // Intercambiamos los buffers
     glutSwapBuffers();
 }
 
 void funKeyboard(int key, int x, int y) {
-
+    if(esTarea4){
+        switch(key){
+        case GLUT_KEY_UP:
+            T4Girar += 0.1f;
+            break;
+        case GLUT_KEY_DOWN:
+            T4Girar  -= 0.1f;
+            break;
+        case GLUT_KEY_RIGHT:
+            T4Dezplazar += 0.1f;
+            break;
+        case GLUT_KEY_LEFT:
+            T4Dezplazar -= 0.1f;
+            break;
+        default:
+            T4Girar = 0.0f;
+            T4Dezplazar = 0.0f;
+        }
+    }
+    else{
     switch(key) {
         case GLUT_KEY_UP:
             desZ -= 0.1f;
@@ -173,7 +199,7 @@ void funKeyboard(int key, int x, int y) {
             desZ = -5.0f;  
             rotY =  0.0f;
     }
-    
+    }
     glutPostRedisplay();
     
 }
@@ -240,6 +266,7 @@ void tarea1(){
             glDrawSphere('w',0.1f);
         glPopMatrix();
     glPopMatrix();
+    esTarea4=false;
 }
 void tarea2(){
     glPushMatrix();
@@ -267,10 +294,60 @@ void tarea2(){
             glDrawSphere('w',0.1f);
         glPopMatrix();
     glPopMatrix();
+    esTarea4=false;
 }
 void tarea3(){
-    
+    //F1 detener/arrancar animación
+    //Con la animación detenida, rotar de forma independiente la Tierra y la Luna mediante las teclas de las Flechas.
+    //2):Zoom con rueda del raton, establecer limites
+    //3):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
+    esTarea4=false;
 }
 void tarea4(){
-    
+    /*
+    glPushMatrix();
+        glRotatef(T4Girar,0.0f,0.0f,1.0f);
+        glTranslatef(T4Dezplazar,0.0f,0.0f);
+        glTranslatef(5.0f,-0.25f,0.0f);
+        glScalef(0.5f,0.5f,1.0f);
+        glTranslatef(-0.5f,0.5f,0.0f);
+        glRotatef(-90,0.0f,0.0f,1.0f);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        drawPieza();
+    glPopMatrix();
+    */
+    glPushMatrix();
+        glTranslatef(2.5f,0.0f,0.0f);
+        glRotatef(T4Girar,0.0f,0.0f,1.0f);
+        glRotatef(-90,0.0f,0.0f,1.0f);
+        glPushMatrix();
+            glTranslatef(-0.5f,-0.5f,0.0f);
+            glColor3f(1.0f, 0.0f, 1.0f);
+            drawPieza();
+        glPopMatrix();
+        glPushMatrix();
+            glRotatef(90,0.0f,0.0f,1.0f);
+            glTranslatef(T4Dezplazar,0.0f,0.0f);
+            glTranslatef(2.5f,0.25f,0.0f);
+            glScalef(0.5f,0.5f,1.0f);
+            glRotatef(-90,0.0f,0.0f,1.0f);
+            glColor3f(0.0f, 1.0f, 0.0f);
+            drawPieza();
+        glPopMatrix();
+    glPopMatrix();
+    glPushMatrix();
+        glTranslatef(-0.5f,0.5f,0.0f);
+        glRotatef(-90,0.0f,0.0f,1.0f);
+        glColor3f(0.0f, 0.0f, 1.0f);
+        drawPieza();
+    glPopMatrix();
+    esTarea4=true;
+}
+void drawPieza(){
+    glBegin(GL_QUADS);
+        glVertex3f( 0.0, 0.0, 0.0);
+        glVertex3f( 1.0, 0.0, 0.0);        
+        glVertex3f( 1.0, 3.0, 0.0);
+        glVertex3f( 0.0, 3.0, 0.0);
+    glEnd();
 }
