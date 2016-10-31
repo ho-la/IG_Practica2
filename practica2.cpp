@@ -304,18 +304,6 @@ void tarea3(){
     esTarea4=false;
 }
 void tarea4(){
-    /*
-    glPushMatrix();
-        glRotatef(T4Girar,0.0f,0.0f,1.0f);
-        glTranslatef(T4Dezplazar,0.0f,0.0f);
-        glTranslatef(5.0f,-0.25f,0.0f);
-        glScalef(0.5f,0.5f,1.0f);
-        glTranslatef(-0.5f,0.5f,0.0f);
-        glRotatef(-90,0.0f,0.0f,1.0f);
-        glColor3f(0.0f, 1.0f, 0.0f);
-        drawPieza();
-    glPopMatrix();
-    */
     glPushMatrix();
         glTranslatef(2.5f,0.0f,0.0f);
         glRotatef(T4Girar,0.0f,0.0f,1.0f);
