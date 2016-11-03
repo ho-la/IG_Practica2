@@ -21,6 +21,7 @@ void funReshape(int w, int h);
 void funDisplay();
 void drawTriangulo(char color);
 void funKeyboard(int key, int x, int y);
+void glutMouseFunc(int evt, int x, int y);
 void destroyFunc();
 void funIdle();
 
@@ -38,7 +39,7 @@ GLfloat desZ = -5.0f;
 GLfloat rotY =  0.0f;
 
 //Si gira de 1h en 1h
-GLfloat anio = 1.0f; //(360.0/365.0)/24; //365*24 horas
+GLfloat anio = (360.0/365.0)/24; //365*24 horas
 GLfloat dia = (360.0/24.0); //24 horas
 GLfloat mes= anio*12;  // Luna gira 12 veces sobre a Tierra en un año
 
@@ -51,6 +52,7 @@ GLfloat inclinaLuna = 45.0f;
 GLfloat RAnio = 0.0f;
 GLfloat RDia = 0.0f;
 GLfloat RMes=0.0f;
+GLboolean anima=true;
 
 GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
@@ -78,7 +80,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funKeyboard);
-    //glutIdleFunc(funIdle);  
+    glutIdleFunc(funIdle);  
     
  // Bucle principal
     glutMainLoop();
@@ -149,8 +151,8 @@ void funDisplay() {
     glTranslatef(0.0f, 0.0f, -5.0f);
     //tarea1();
     //tarea2();
-    //tarea3();
-    tarea4();
+    tarea3();
+    //tarea4();
  // Intercambiamos los buffers
     glutSwapBuffers();
 }
@@ -158,52 +160,86 @@ void funDisplay() {
 void funKeyboard(int key, int x, int y) {
     if(esTarea4){
         switch(key){
-        case GLUT_KEY_UP:
-            T4Girar += 0.1f;
-            break;
-        case GLUT_KEY_DOWN:
-            T4Girar  -= 0.1f;
-            break;
-        case GLUT_KEY_RIGHT:
-            T4Dezplazar += 0.1f;
-            break;
-        case GLUT_KEY_LEFT:
-            T4Dezplazar -= 0.1f;
-            break;
-        default:
-            T4Girar = 0.0f;
-            T4Dezplazar = 0.0f;
+            case GLUT_KEY_UP:
+                T4Girar += 0.1f;
+                break;
+            case GLUT_KEY_DOWN:
+                T4Girar  -= 0.1f;
+                break;
+            case GLUT_KEY_RIGHT:
+                T4Dezplazar += 0.1f;
+                break;
+            case GLUT_KEY_LEFT:
+                T4Dezplazar -= 0.1f;
+                break;
+            default:
+                T4Girar = 0.0f;
+                T4Dezplazar = 0.0f;
         }
     }
     else{
-    switch(key) {
-        case GLUT_KEY_UP:
-            desZ -= 0.1f;
-            break;
-        case GLUT_KEY_DOWN:
-            desZ += 0.1f;
-            break;
-        case GLUT_KEY_RIGHT:
-            //rotY -= 5.0f;
-            RAnio -= anio;
-            RDia -= dia;
-            RMes -=mes;
-            break;
-        case GLUT_KEY_LEFT:
-            //rotY += 5.0f;
-            RAnio += anio;
-            RDia += dia;
-            RMes +=mes;
-            break;
-        default:
-            desZ = -5.0f;  
-            rotY =  0.0f;
-    }
+    //F1 detener/arrancar animación
+    //Con la animación detenida, rotar de forma independiente la Tierra y la Luna mediante las teclas de las Flechas.
+        if(anima==false)
+         switch(key) {
+             case GLUT_KEY_F1:
+                 anima = true;
+                 break;
+        }    
+        else{
+            switch(key){
+                case GLUT_KEY_F1:
+                    anima = false;
+                    break;
+                case GLUT_KEY_UP:
+                    desZ -= 0.1f;
+                    break;
+                case GLUT_KEY_DOWN:
+                    desZ += 0.1f;
+                    break;
+                case GLUT_KEY_RIGHT:
+                    //rotY -= 5.0f;
+                    RAnio -= anio;
+                    RDia -= dia;
+                    RMes -=mes;
+                    break;
+                case GLUT_KEY_LEFT:
+                    //rotY += 5.0f;
+                    RAnio += anio;
+                    RDia += dia;
+                    RMes +=mes;
+                    break;
+            }
+        }    
     }
     glutPostRedisplay();
     
 }
-
+void glutMouseFunc(int evt, int x, int y){
+    //2.1 y 2.2):Zoom con rueda del raton, establecer limites para que no se vea demasiados pequeños o grandes
+    /*3.1)  Modificar la posición de la cámara (controlada con la función gluLookAt) para que la
+        podamos desplazar verticalmente, manteniendo el punto hacia el que mira en el centro del
+        sistema solar.
+    */        
+    //3.2):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
+    if(!esTarea4){
+        switch(evt){
+            case GLUT_LEFT_BUTTON:
+                break;
+            case GLUT_RIGHT_BUTTON:
+                break; 
+            //Rueba arriba
+            case 3:
+                
+                break;
+            //Rueda abajo    
+            case 4:
+                
+                break;
+        }        
+    }
+    glutPostRedisplay();
+}
 void glDrawSphere(char color,float radio){
     switch(color) {
         //White
@@ -234,12 +270,12 @@ void glDrawSphere(char color,float radio){
     //(GLdouble radius,GLint slices, GLint stacks); (number of lines)
 }
 void funIdle() {
-        
-        RAnio += anio ;
+    if(anima){
+        RAnio += anio;
         RDia += dia;
-        RMes+=mes;
- 
-    Sleep(100);   
+        RMes +=mes;
+    }   
+    Sleep(50);   
     glutPostRedisplay();  
 }
 void tarea1(){
@@ -301,7 +337,7 @@ void tarea3(){
     //Con la animación detenida, rotar de forma independiente la Tierra y la Luna mediante las teclas de las Flechas.
     //2):Zoom con rueda del raton, establecer limites
     //3):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
-    esTarea4=false;
+    tarea1();
 }
 void tarea4(){
     glPushMatrix();
