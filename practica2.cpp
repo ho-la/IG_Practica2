@@ -53,6 +53,8 @@ GLfloat RAnio = 0.0f;
 GLfloat RDia = 0.0f;
 GLfloat RMes=0.0f;
 GLboolean anima=true;
+GLboolean hacerZoom=true;
+GLfloat zoom = -5.0f;
 
 GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
@@ -147,8 +149,10 @@ void funDisplay() {
     // Aquí cargaremos la matriz V
     
  // Dibujamos los objetos (M)
-    glTranslatef(0.0f, 0.0f, desZ);
-    glTranslatef(0.0f, 0.0f, -5.0f);
+    //glTranslatef(0.0f, 0.0f, desZ);
+    //glTranslatef(0.0f, 0.0f, -5.0f);
+    if (hacerZoom)
+        glTranslatef(0.0f,0.0f, zoom);
     //tarea1();
     //tarea2();
     tarea3();
@@ -180,16 +184,16 @@ void funKeyboard(int key, int x, int y) {
     else{
     //F1 detener/arrancar animación
     //Con la animación detenida, rotar de forma independiente la Tierra y la Luna mediante las teclas de las Flechas.
-        if(anima==false)
+        if(anima==true)
          switch(key) {
              case GLUT_KEY_F1:
-                 anima = true;
+                 anima = false;
                  break;
         }    
         else{
             switch(key){
                 case GLUT_KEY_F1:
-                    anima = false;
+                    anima = true;
                     break;
                 case GLUT_KEY_UP:
                     desZ -= 0.1f;
@@ -199,15 +203,15 @@ void funKeyboard(int key, int x, int y) {
                     break;
                 case GLUT_KEY_RIGHT:
                     //rotY -= 5.0f;
-                    RAnio -= anio;
-                    RDia -= dia;
-                    RMes -=mes;
+                    RAnio--;
+                    RDia -= 365;
+                    RMes -= 12;
                     break;
                 case GLUT_KEY_LEFT:
                     //rotY += 5.0f;
-                    RAnio += anio;
-                    RDia += dia;
-                    RMes +=mes;
+                    RAnio++;
+                    RDia += 365;
+                    RMes +=12;
                     break;
             }
         }    
@@ -230,11 +234,13 @@ void glutMouseFunc(int evt, int x, int y){
                 break; 
             //Rueba arriba
             case 3:
-                
+                if (zoom<-15)
+                    zoom-=1;
                 break;
             //Rueda abajo    
             case 4:
-                
+                if (zoom<-2)
+                    zoom+=1;
                 break;
         }        
     }
@@ -271,11 +277,11 @@ void glDrawSphere(char color,float radio){
 }
 void funIdle() {
     if(anima){
-        RAnio += anio;
-        RDia += dia;
-        RMes +=mes;
+        RAnio++;
+        RDia += 365;
+        RMes +=12;
     }   
-    Sleep(50);   
+    Sleep(10);   
     glutPostRedisplay();  
 }
 void tarea1(){
@@ -337,7 +343,30 @@ void tarea3(){
     //Con la animación detenida, rotar de forma independiente la Tierra y la Luna mediante las teclas de las Flechas.
     //2):Zoom con rueda del raton, establecer limites
     //3):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
-    tarea1();
+    glPushMatrix();
+        //Dibujar sol
+        glPushMatrix();
+            glRotatef(90,1.0f,0.0f,0.0f);
+            glDrawSphere('y',2.0f);
+        glPopMatrix();
+        //Dibujar tierra
+        glRotatef(RAnio,0.0f,1.0f,0.0f);
+        glTranslatef(4.0f,0.0f,0.0f);
+        glRotatef(RDia,0.0f,1.0f,0.0f);
+        glPushMatrix();
+            glRotatef(90,1.0f,0.0f,0.0f);
+            glDrawSphere('b',0.5f);
+        glPopMatrix();
+        glRotatef(-RDia,0.0f,1.0f,0.0f);
+        //Dibujar luna
+        glRotatef(RMes,0.0f,1.0f,0.0f);
+        glTranslatef(1.5,0.0,0.0);
+        glPushMatrix();
+            glRotatef(90,1.0f,0.0f,0.0f);
+            glDrawSphere('w',0.1f);
+        glPopMatrix();
+    glPopMatrix();
+    esTarea4 = false;
 }
 void tarea4(){
     glPushMatrix();
