@@ -38,10 +38,10 @@ int h = 500;
 GLfloat desZ = -5.0f;
 GLfloat rotY =  0.0f;
 
-//Si gira de 1h en 1h
-GLfloat anio = (360.0/365.0)/24; //365*24 horas
-GLfloat dia = (360.0/24.0); //24 horas
-GLfloat mes= anio*12;  // Luna gira 12 veces sobre a Tierra en un año
+//Si gira de 4h en 4h
+GLfloat anio = (360.0/365.0)/6; //365*24 horas
+GLfloat dia = (360.0/6.0); //24 horas
+GLfloat mes= anio*12*4;  // Luna gira 12 veces sobre a Tierra en un año
 
 
 
