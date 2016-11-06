@@ -21,7 +21,7 @@ void funReshape(int w, int h);
 void funDisplay();
 void drawTriangulo(char color);
 void funKeyboard(int key, int x, int y);
-void glutMouseFunc(int evt, int x, int y);
+void raton (int button, int state, int x, int y);
 void destroyFunc();
 void funIdle();
 
@@ -54,8 +54,8 @@ GLfloat RDia = 0.0f;
 GLfloat RMes=0.0f;
 GLboolean anima=true;
 GLboolean hacerZoom=true;
-GLfloat zoom = -5.0f;
-
+GLfloat zoom = -10.0f;
+GLfloat giroVertical=0.0f;
 GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
 GLboolean esTarea4=true;
@@ -82,6 +82,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funKeyboard);
+	glutMouseFunc(raton);
     glutIdleFunc(funIdle);  
     
  // Bucle principal
@@ -138,7 +139,7 @@ void funDisplay() {
     //En perspectiva
     /**/
     GLfloat aspectRatio = (GLfloat)w/(GLfloat)h;    
-    GLfloat fovy = 50.0f, nplane = 0.1f, fplane = 20.0f;
+    GLfloat fovy = 50.0f, nplane = 0.1f, fplane = 30.0f;
     gluPerspective(fovy,aspectRatio,nplane,fplane);
     /**/ 
  // Para configurar las matrices M y V
@@ -195,12 +196,6 @@ void funKeyboard(int key, int x, int y) {
                 case GLUT_KEY_F1:
                     anima = true;
                     break;
-                case GLUT_KEY_UP:
-                    desZ -= 0.1f;
-                    break;
-                case GLUT_KEY_DOWN:
-                    desZ += 0.1f;
-                    break;
                 case GLUT_KEY_RIGHT:
                     //rotY -= 5.0f;
                     RAnio--;
@@ -219,7 +214,7 @@ void funKeyboard(int key, int x, int y) {
     glutPostRedisplay();
     
 }
-void glutMouseFunc(int evt, int x, int y){
+void raton (int button, int state, int x, int y){
     //2.1 y 2.2):Zoom con rueda del raton, establecer limites para que no se vea demasiados pequeños o grandes
     /*3.1)  Modificar la posición de la cámara (controlada con la función gluLookAt) para que la
         podamos desplazar verticalmente, manteniendo el punto hacia el que mira en el centro del
@@ -227,19 +222,19 @@ void glutMouseFunc(int evt, int x, int y){
     */        
     //3.2):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     if(!esTarea4){
-        switch(evt){
+        switch(button){
             case GLUT_LEFT_BUTTON:
-                break;
-            case GLUT_RIGHT_BUTTON:
+                if(state==GLUT_DOWN)
+                    giroVertical -= 6.0f;
                 break; 
             //Rueba arriba
             case 3:
-                if (zoom<-15)
+                if (zoom>-17)
                     zoom-=1;
                 break;
             //Rueda abajo    
             case 4:
-                if (zoom<-2)
+                if (zoom<-7)
                     zoom+=1;
                 break;
         }        
@@ -344,6 +339,7 @@ void tarea3(){
     //2):Zoom con rueda del raton, establecer limites
     //3):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     glPushMatrix();
+        glRotatef(giroVertical,1.0f,0.0f,0.0f);
         //Dibujar sol
         glPushMatrix();
             glRotatef(90,1.0f,0.0f,0.0f);
