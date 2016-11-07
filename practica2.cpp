@@ -24,6 +24,7 @@ void funKeyboard(int key, int x, int y);
 void raton (int button, int state, int x, int y);
 void destroyFunc();
 void funIdle();
+void moveMouse(int x,int y);
 
 void glDrawSphere(char color,float radio);
 void tarea1();
@@ -59,6 +60,7 @@ GLfloat giroVertical=0.0f;
 GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
 GLboolean esTarea4=true;
+GLboolean pulsado=false;
 int main(int argc, char** argv) {
     
  // Inicializamos GLUT
@@ -82,7 +84,8 @@ int main(int argc, char** argv) {
     glutReshapeFunc(funReshape);
     glutDisplayFunc(funDisplay);
     glutSpecialFunc(funKeyboard);
-	glutMouseFunc(raton);
+    glutMouseFunc(raton);
+    glutMotionFunc(moveMouse);
     glutIdleFunc(funIdle);  
     
  // Bucle principal
@@ -152,8 +155,10 @@ void funDisplay() {
  // Dibujamos los objetos (M)
     //glTranslatef(0.0f, 0.0f, desZ);
     //glTranslatef(0.0f, 0.0f, -5.0f);
-    if (hacerZoom)
-        glTranslatef(0.0f,0.0f, zoom);
+    
+    
+    glTranslatef(0.0f,0.0f, zoom);
+    glRotatef(giroVertical,1.0f,0.0f,0.0f);   
     //tarea1();
     //tarea2();
     tarea3();
@@ -223,10 +228,6 @@ void raton (int button, int state, int x, int y){
     //3.2):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     if(!esTarea4){
         switch(button){
-            case GLUT_LEFT_BUTTON:
-                if(state==GLUT_DOWN)
-                    giroVertical -= 6.0f;
-                break; 
             //Rueba arriba
             case 3:
                 if (zoom>-17)
@@ -238,6 +239,12 @@ void raton (int button, int state, int x, int y){
                     zoom+=1;
                 break;
         }        
+    }
+    glutPostRedisplay();
+}
+void moveMouse(int x,int y){
+    if(!esTarea4){
+        giroVertical -= x/360;
     }
     glutPostRedisplay();
 }
@@ -339,7 +346,6 @@ void tarea3(){
     //2):Zoom con rueda del raton, establecer limites
     //3):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     glPushMatrix();
-        glRotatef(giroVertical,1.0f,0.0f,0.0f);
         //Dibujar sol
         glPushMatrix();
             glRotatef(90,1.0f,0.0f,0.0f);
