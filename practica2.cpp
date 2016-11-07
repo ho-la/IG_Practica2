@@ -61,6 +61,9 @@ GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
 GLboolean esTarea4=true;
 GLboolean pulsado=false;
+
+int iniX;
+
 int main(int argc, char** argv) {
     
  // Inicializamos GLUT
@@ -228,6 +231,10 @@ void raton (int button, int state, int x, int y){
     //3.2):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     if(!esTarea4){
         switch(button){
+            case GLUT_LEFT_BUTTON: 
+                if(state == GLUT_DOWN)
+                    iniX=x;
+                    break;
             //Rueba arriba
             case 3:
                 if (zoom>-17)
@@ -244,7 +251,7 @@ void raton (int button, int state, int x, int y){
 }
 void moveMouse(int x,int y){
     if(!esTarea4){
-        giroVertical -= x/360;
+        giroVertical=(GLfloat)(x - iniX);
     }
     glutPostRedisplay();
 }
