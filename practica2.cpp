@@ -237,13 +237,13 @@ void raton (int button, int state, int x, int y){
                     break;
             //Rueba arriba
             case 3:
-                if (zoom>-17)
-                    zoom-=1;
+                if (zoom<-7)
+                    zoom+=1;
                 break;
             //Rueda abajo    
             case 4:
-                if (zoom<-7)
-                    zoom+=1;
+                if (zoom>-17)
+                    zoom-=1;
                 break;
         }        
     }
