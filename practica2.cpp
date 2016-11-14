@@ -15,6 +15,7 @@
 #include <GL/freeglut.h>
 #include <stdio.h>
 #include <cstdlib>
+#include <math.h>
 
 void initFunc();
 void funReshape(int w, int h);
@@ -42,9 +43,11 @@ GLfloat rotY =  0.0f;
 //Si gira de 4h en 4h
 GLfloat anio = (360.0/365.0)/6; //365*24 horas
 GLfloat dia = (360.0/6.0); //24 horas
-GLfloat mes= anio*12*4;  // Luna gira 12 veces sobre a Tierra en un año
+GLfloat mes= anio*12;  // Luna gira 12 veces sobre a Tierra en un año
 
 
+GLfloat GirarAzul=0.0f;
+GLfloat GirarNaranja=0.0f;
 
 GLboolean girar=true;
 GLfloat inclinaTierra = -30.0f;
@@ -61,7 +64,11 @@ GLfloat T4Girar=0.0f;
 GLfloat T4Dezplazar=0.0f;
 GLboolean esTarea4=true;
 GLboolean pulsado=false;
-
+GLfloat camaraX=0.0f;
+GLfloat camaraY=0.0f;
+GLfloat camaraZ=0.0f;
+GLfloat angulo = 0.0f;
+int ejeY=1;
 int iniX;
 
 int main(int argc, char** argv) {
@@ -157,14 +164,19 @@ void funDisplay() {
     
  // Dibujamos los objetos (M)
     //glTranslatef(0.0f, 0.0f, desZ);
-    //glTranslatef(0.0f, 0.0f, -5.0f);
+    if(esTarea4)
+        glTranslatef(0.0f, 0.0f, -10.0f);
+    //glTranslatef(0.0f,0.0f, zoom);
     
-    
-    glTranslatef(0.0f,0.0f, zoom);
-    glRotatef(giroVertical,1.0f,0.0f,0.0f);   
+     if(!esTarea4){
+        glTranslatef(0.0f,0.0f, zoom);
+        glRotatef(giroVertical,1.0f,0.0f,0.0f);
+     }  
+    //if(!esTarea4)
+      //  gluLookAt(0,zoom*sin(angulo),(zoom-2)*cos(angulo), 0,0,0, 0,1,0);
     //tarea1();
-    //tarea2();
-    tarea3();
+    tarea2();
+    //tarea3();
     //tarea4();
  // Intercambiamos los buffers
     glutSwapBuffers();
@@ -185,6 +197,18 @@ void funKeyboard(int key, int x, int y) {
             case GLUT_KEY_LEFT:
                 T4Dezplazar -= 0.1f;
                 break;
+            case GLUT_KEY_F2:
+                GirarAzul -= 0.1f;
+                break;
+            case GLUT_KEY_F3:
+                GirarAzul += 0.1f;
+                break;
+            case GLUT_KEY_F4:
+                GirarNaranja -= 0.1f;
+                break;
+            case GLUT_KEY_F5:
+                GirarNaranja += 0.1f;
+                break;    
             default:
                 T4Girar = 0.0f;
                 T4Dezplazar = 0.0f;
@@ -231,9 +255,13 @@ void raton (int button, int state, int x, int y){
     //3.2):Dezplazar camara verticarmente, controlar el dezplazamiento con la tecla izq del raton
     if(!esTarea4){
         switch(button){
-            case GLUT_LEFT_BUTTON: 
+            case GLUT_LEFT_BUTTON:
+                //gluLookAt(0,0,1,0,0,-5,0,1,0);
                 if(state == GLUT_DOWN)
-                    iniX=x;
+                    iniX=y;
+                /*if(state == GLUT_UP)
+                    giroVertical += (x-iniX)*10;
+                */  
                     break;
             //Rueba arriba
             case 3:
@@ -251,8 +279,9 @@ void raton (int button, int state, int x, int y){
 }
 void moveMouse(int x,int y){
     if(!esTarea4){
-        giroVertical=(GLfloat)(x - iniX);
+        giroVertical = (GLfloat)(y - iniX);
     }
+    //angulo =(GLfloat)  -(y-300)/10;
     glutPostRedisplay();
 }
 void glDrawSphere(char color,float radio){
@@ -286,9 +315,9 @@ void glDrawSphere(char color,float radio){
 }
 void funIdle() {
     if(anima){
-        RAnio++;
-        RDia += 365;
-        RMes +=12;
+        RAnio += anio;
+        RDia += dia;
+        RMes += mes;
     }   
     Sleep(10);   
     glutPostRedisplay();  
@@ -378,7 +407,10 @@ void tarea3(){
     esTarea4 = false;
 }
 void tarea4(){
+    glRotatef(GirarAzul,1.0f,0.0f,0.0f);
     glPushMatrix();
+        glRotatef(GirarNaranja,1.0f,0.0f,0.0f);
+        
         glTranslatef(2.5f,0.0f,0.0f);
         glRotatef(T4Girar,0.0f,0.0f,1.0f);
         glRotatef(-90,0.0f,0.0f,1.0f);
